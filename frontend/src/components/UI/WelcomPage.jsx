@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import InputField from './InputField';
 import ResultCard from './ResultCard';
 
@@ -8,6 +8,11 @@ function WelcomePage(props) {
     color: "#481A65"
   };
 
+  const [sent, setSent] = useState(false);
+  const handelSend = (new_sent) => {
+    setSent(new_sent);
+  }
+
   return (
     <div>
       <div className="container">
@@ -15,12 +20,13 @@ function WelcomePage(props) {
         <br />
         <InputField
           text={props.text}
+          handelSend={handelSend}
           handleChange={props.handleChange}
           handleClear={props.handleClear}
           handlePostText={props.handlePostText}
         />
         <br />
-        <ResultCard responseText={props.responseText} />
+        <ResultCard oldText={props.text} responseText={props.responseText} sent={sent}/>
       </div>
     </div>
   );

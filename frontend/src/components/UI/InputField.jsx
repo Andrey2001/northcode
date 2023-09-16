@@ -34,8 +34,28 @@ function InputField(props) {
         placeholder={"Введите текст..."}
       />
       <div className="my-3">
-        <button onClick={props.handlePostText} style={{ backgroundColor: "#481A65", color: "white" }} type="button" className="btn">Отправить</button>
-        <button onClick={props.handleClear} style={{ backgroundColor: "#C39BD3", color: "white" }} type="button" className="btn mx-3">Очистить</button>
+        <button
+          onClick={() => {
+            props.handlePostText();
+            props.handelSend(true); // Set sent to true after clicking the button
+          }}
+          style={{ backgroundColor: "#481A65", color: "white" }}
+          type="button"
+          className="btn"
+        >
+          Отправить
+        </button>
+
+        <button onClick={() => {
+            props.handleClear();
+            props.handelSend(false); // Set sent to true after clicking the button
+          }}
+        style={{ backgroundColor: "#C39BD3", color: "white" }} 
+        type="button" 
+        className="btn mx-3"
+        >
+          Очистить
+        </button>
       </div>
     </div>
   );
