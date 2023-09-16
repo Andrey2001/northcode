@@ -4,6 +4,7 @@
 ```bash 
     docker-compose build
 ```
+
 2. Запуск приложения:
 ```bash 
     docker-compose up
