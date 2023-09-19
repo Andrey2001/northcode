@@ -1,5 +1,7 @@
 # HackMurmansk
 
+ИТОГОВОЕ РЕШЕНИЕ на ветке German_branch
+
 1. Создание контейнера и установка необходимых библиотек:
 ```bash 
     docker-compose build
