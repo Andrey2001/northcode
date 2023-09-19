@@ -22,9 +22,12 @@ def preproccessing(text, rus_by2letters, lm):
     text = re.sub(r"(?<=[\):])(?=[A-Za-zА-ЯЁа-яё0-9])", " ", text)
     text = re.sub(r"(?<=[!;])(?=[A-Za-zА-ЯЁа-яё0-9 ])", "\n", text)
     text = re.sub(r"(?<=[.])(?=[А-ЯЁа-яё])", "\n", text)
+    text = re.sub(r"\n\"{1,}", "\n", text)
     text = re.sub(r'(\d{1}): (\d{2})', r'\1:\2', text)
     text = re.sub(r':\s', r': ', text)
     text = re.sub(r'\"{2,}', r'"', text)
+    text = text.replace("&nbsp", "")
+    text = re.sub(r'([^a-zA-ZА-ЯЁа-яё0-9])\1+', r'\1', text)
     words = re.split(r'\W', text)
     #words = [re.sub(r'\W+', '', word) for word in words]
     for word in words:
@@ -32,12 +35,13 @@ def preproccessing(text, rus_by2letters, lm):
             tmp = word.replace('ё', 'е').lower()
             if tmp not in rus_by2letters[tmp[0]][tmp[1]]:
                 #rus.update({tmp})
-                dist, minword = minlevdist(tmp, rus_by2letters[tmp[0]][tmp[1]])
-                if dist < 3:
-                    text = text.replace(word, minword)
-                else:
-                    new_words = ' '.join(lm.split(word))
-                    text = text.replace(word, new_words)
+                if word[0].islower():
+                    dist, minword = minlevdist(tmp, rus_by2letters[tmp[0]][tmp[1]])
+                    if dist < 3:
+                        text = text.replace(word, minword)
+                    else:
+                        new_words = ' '.join(lm.split(word))
+                        text = text.replace(word, new_words)
     #text = text.replace('- ', '-- ').replace(' --', '--').replace(' -', ' --')
     return text
 
@@ -54,7 +58,6 @@ def add_html_markup(text):
         header = parts[0].strip()
         another = parts[1]
     else:
-        another = parts[0]
         if '\n' in text:
             html_text = "<ul>\n"
             tasks = text.split('\n')
@@ -62,13 +65,20 @@ def add_html_markup(text):
                 if task.strip() != "":
                     html_text += "  <li>" + task.strip() +  "</li>\n"
             return html_text + "</ul>"
-        # elif '--' in text:
-        #     html_text = "<ul>\n"
-        #     tasks = text.split('--')
-        #     for task in tasks:
-        #         if task.strip() != "":
-        #             html_text += "  <li>" + task.strip() +  "</li>\n"
-        #     return html_text + "</ul>"
+        elif '-' in text:
+            html_text = "<ul>\n"
+            tasks = text.split('-')
+            for task in tasks:
+                if task.strip() != "":
+                    html_text += "  <li>" + task.strip() +  "</li>\n"
+            return html_text + "</ul>"
+        elif ';' in text:
+            html_text = "<ul>\n"
+            tasks = text.split(';')
+            for task in tasks:
+                if task.strip() != "":
+                    html_text += "  <li>" + task.strip() +  "</li>\n"
+            return html_text + "</ul>"
         else:
             return "<p>" + text.strip() + "</p>"
         

@@ -17,30 +17,58 @@ function TextCard(props) {
     if (typeof originalText !== 'string' || typeof newText !== 'string') {
       return null;
     }
-
-    const originalWords = originalText.split(/(<[^>]+>|[^<>\s]+)/g);
-    const newWords = newText.split(/(<[^>]+>|[^<>\s]+)/g);
-
-    const highlightedWords = newWords.map((word, index) => {
+  
+    // Regular expression to split text into words and HTML tags
+    const wordAndTagRegex = /(<[^>]+>|[^<>\s]+)/g;
+    const originalWords = originalText.match(wordAndTagRegex);
+    const newWords = newText.match(wordAndTagRegex);
+  
+    if (!originalWords || !newWords) {
+      return null;
+    }
+  
+    const highlightedWords = [];
+    let index = 0;
+  
+    for (let i = 0; i < newWords.length; i++) {
+      const word = newWords[i];
       let res;
+      
       if (color === 'red') {
         res = originalWords[index];
       } else {
         res = word;
       }
+  
+      // Check if the word is an HTML tag (e.g., '<div>')
+      const isHtmlTag = /^<[^>]+>$/.test(word);
+      const isSpace = /^\s+$/.test(word) && /^\s+$/.test(originalWords[index]);
 
-      if (word !== originalWords[index]) {
-        // If the word doesn't match, apply the specified color
-        return (
-          <span key={index} style={{ color }}>
-            {res}
-          </span>
-        );
-      } else {
-        return <span key={index}>{res}</span>;
+      if (isHtmlTag) {
+        highlightedWords.push(word); // Preserve HTML tags
+      } 
+      else if (!isSpace) 
+      {
+        if (word !== originalWords[index]) {
+          console.log(res, word, originalWords[index], isHtmlTag);
+          // If the word doesn't match, apply the specified color
+          // console.log(word, originalWords[index])
+          highlightedWords.push(
+            <span key={i} style={{ color }}>
+              {res}
+            </span>
+          );
+        } else {
+          highlightedWords.push(<span key={i}>{res}</span>);
+        }
       }
-    });
-
+  
+      // If it's not an HTML tag, increment the index
+      if (!isHtmlTag && !isSpace) {
+        index++;
+      }
+    }
+  
     return (
       <span style={{ whiteSpace: 'pre-wrap' }}>
         {highlightedWords.map((word, index) => (
@@ -49,7 +77,8 @@ function TextCard(props) {
       </span>
     );
   };
-
+  
+  
   return (
     <div className="card" style={cardStyle}> {/* Обновляем стили контейнера */}
       <div className="card-body">

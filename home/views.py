@@ -53,9 +53,9 @@ class ChatBot(APIView):
 
             for idx, row in data.iterrows():
                 ans[idx] = add_html_markup(ans[idx])
-            data["model_res"] = pd.Series(ans)
-            data.to_csv("modified_ans.csv", index=False)
+            
+            pd.Series(ans).to_csv("results/ans.csv", index=False)
 
-            return JsonResponse({'success': True, 'response_message': "HELLO"})
+            return JsonResponse({'success': True, 'response_message': ""})
         
         return JsonResponse({'success': True, 'response_message': "BADD"})

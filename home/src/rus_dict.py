@@ -2,8 +2,8 @@ import gzip, codecs
 import os
 def create_dict():
 
-    with gzip.open("./home/src/new_rus.txt.gz") as file:
-        with codecs.getreader('cp1251')(file) as text_file:
+    with gzip.open("./home/src/russian.txt.gz") as file:
+        with codecs.getreader('utf-8')(file) as text_file:
             rus_dict = text_file.read().split()
 
     ALPHABET = 'йцукенгшщзхъфывапролджэячсмитьбюё-'

@@ -18,7 +18,6 @@ function InputField(props) {
 
   const handleFileInputChange = (event) => {
     const newfile = event.target.files[0];
-    console.log(newfile);
     props.handleFileChange(newfile); // Pass the new text to the parent component
   };
 

@@ -7,7 +7,7 @@ import WelcomePage from './UI/WelcomPage';
 function InputData() {
     const location = useLocation();
     const [text, setText] = useState('');
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState('');
     const [fileType, setFileType] = useState(null);
     const [responseText, setResponseText] = useState('');
 
@@ -21,7 +21,6 @@ function InputData() {
 
     const handleFileChange = (event) => {
       setFileType('file');
-      console.log(event);
       setFile(event);
     };
 
@@ -30,10 +29,10 @@ function InputData() {
             const formData = new FormData();
             if (fileType === 'file') {
               formData.append('file', file);
-              setFile(null);
+              setFile('');
+              setFileType('');
             } else {
               formData.append('message', text);
-              setText('');
             }
             
             console.log(file);
