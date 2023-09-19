@@ -5,7 +5,8 @@ import ResultCard from './ResultCard';
 function WelcomePage(props) {
   const formStyle = {
     marginTop: '20px',
-    color: "#481A65"
+    color: "#02598A",
+    fontFamily: 'Century, sans-serif',
   };
 
   const [sent, setSent] = useState(false);
@@ -16,16 +17,16 @@ function WelcomePage(props) {
   return (
     <div>
       <div className="container">
-        <h1 className="text-center" style={formStyle}>Welcome - Let's format text with AI !</h1>
         <br />
+        <h2 style={formStyle}>Введите текст</h2>
         <InputField
           text={props.text}
           handelSend={handelSend}
+          handleFileChange={props.handleFileChange}
           handleChange={props.handleChange}
           handleClear={props.handleClear}
           handlePostText={props.handlePostText}
         />
-        <br />
         <ResultCard oldText={props.text} responseText={props.responseText} sent={sent}/>
       </div>
     </div>

@@ -1,58 +1,71 @@
 import React from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // стили для редактора
-import 'react-quill/dist/quill.bubble.css';
-import 'bootstrap/dist/css/bootstrap.min.css'; // стили Bootstrap
+import 'react-quill/dist/quill.snow.css'; // Quill editor styles
+import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap styles
 
 function InputField(props) {
+  const buttonStyles = {
+    backgroundColor: "#02598A",
+    color: "white",
+    fontSize: "16px",
+    fontFamily: 'Century, sans-serif',
+  };
+
+  // Handle input value changes
+  const handleInputChange = (event) => {
+    const newText = event.target.value;
+    props.handleChange(newText); // Pass the new text to the parent component
+  };
+
+  const handleFileInputChange = (event) => {
+    const newfile = event.target.files[0];
+    console.log(newfile);
+    props.handleFileChange(newfile); // Pass the new text to the parent component
+  };
+
   return (
-    <div className="form-floating" style={{marginTop: "7%"}}>
-      <ReactQuill
-        style={{border: "2px solid black", borderRadius: "5px" }}
+    <div className="form-floating" style={{ marginTop: "2%"}}>
+      <input
+        className="form-control"
+        type="text"
+        style={{ borderRadius: "10px", backgroundColor: "white" }}
         value={props.text}
-        onChange={props.handleChange}
-        modules={{
-          toolbar: [
-            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-            ['blockquote', 'code-block'],
-
-            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-            [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-
-            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-            [{ 'font': [] }],
-            [{ 'align': [] }],
-
-            ['clean']         
-          ],
-        }}
-        placeholder={"Введите текст..."}
+        onChange={handleInputChange}
+        placeholder="Введите текст..."
       />
-      <div className="my-3">
+
+      <div className="my-4 d-flex justify-content-center align-items-center">
+        <label htmlFor="fileInput" className="btn" style={buttonStyles}>
+          Загрузка
+          <input
+            id="fileInput"
+            type="file"
+            onChange={handleFileInputChange}
+            // ref={ref}
+            accept=".csv"
+            style={{ display: "none" }}
+          />
+        </label>
+
         <button
           onClick={() => {
             props.handlePostText();
             props.handelSend(true); // Set sent to true after clicking the button
           }}
-          style={{ backgroundColor: "#481A65", color: "white" }}
+          style={buttonStyles}
           type="button"
-          className="btn"
+          className="btn ms-4"
         >
           Отправить
         </button>
 
-        <button onClick={() => {
+        <button
+          onClick={() => {
             props.handleClear();
-            props.handelSend(false); // Set sent to true after clicking the button
+            props.handelSend(false); // Set sent to false after clicking the button
           }}
-        style={{ backgroundColor: "#C39BD3", color: "white" }} 
-        type="button" 
-        className="btn mx-3"
+          style={{ ...buttonStyles, backgroundColor: "#E73D24" }}
+          type="button"
+          className="btn ms-4"
         >
           Очистить
         </button>

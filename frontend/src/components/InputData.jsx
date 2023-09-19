@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import WelcomePage from './UI/WelcomPage';
@@ -7,6 +7,8 @@ import WelcomePage from './UI/WelcomPage';
 function InputData() {
     const location = useLocation();
     const [text, setText] = useState('');
+    const [file, setFile] = useState(null);
+    const [fileType, setFileType] = useState(null);
     const [responseText, setResponseText] = useState('');
 
     const handleChange = (newText) => {
@@ -17,18 +19,24 @@ function InputData() {
         setText('');
     }
 
-    useEffect(() => {
-        if (location.pathname === '/about') {
-          setResponseText('');
-        }
-    }, [location.pathname]);
+    const handleFileChange = (event) => {
+      setFileType('file');
+      console.log(event);
+      setFile(event);
+    };
 
     const handlePostText = async() => {
         try {
             const formData = new FormData();
-      
-            formData.append('message', text);
-            console.log(text);
+            if (fileType === 'file') {
+              formData.append('file', file);
+              setFile(null);
+            } else {
+              formData.append('message', text);
+              setText('');
+            }
+            
+            console.log(file);
 
             const response = await axios.post('http://localhost:8000/', formData);
 
@@ -46,6 +54,7 @@ function InputData() {
           return (
             <WelcomePage
               text={text}
+              handleFileChange={handleFileChange}
               handleChange={handleChange}
               handleClear={handleClear}
               handlePostText={handlePostText}

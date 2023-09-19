@@ -9,17 +9,18 @@ services:
     build:
       context: ./chatbot
       dockerfile: Dockerfile
-    command: python3 /chatbot/manage.py runserver 0.0.0.0:8000
+    command: python3 /hacks_ai/manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/chatbot
+      - .:/hacks_ai
     ports:
       - 8000:8000
+    
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    command: npm start --prefix /chatbot/frontend
+    command: npm start --prefix /hacks_ai/frontend
     volumes:
-      - .:/chatbot
+      - .:/hacks_ai
     ports:
       - 3000:3000
