@@ -13,68 +13,110 @@ function TextCard(props) {
     fontFamily: 'Century, sans-serif',
   };
 
-  const highlightText = (originalText, newText, color) => {
-    if (typeof originalText !== 'string' || typeof newText !== 'string') {
-      return null;
-    }
-  
-    // Regular expression to split text into words and HTML tags
-    const wordAndTagRegex = /(<[^>]+>|[^<>\s]+)/g;
-    const originalWords = originalText.match(wordAndTagRegex);
-    const newWords = newText.match(wordAndTagRegex);
-  
-    if (!originalWords || !newWords) {
-      return null;
-    }
-  
-    const highlightedWords = [];
-    let index = 0;
-  
-    for (let i = 0; i < newWords.length; i++) {
-      const word = newWords[i];
-      let res;
-      
-      if (color === 'red') {
-        res = originalWords[index];
-      } else {
-        res = word;
-      }
-  
-      // Check if the word is an HTML tag (e.g., '<div>')
-      const isHtmlTag = /^<[^>]+>$/.test(word);
-      const isSpace = /^\s+$/.test(word) && /^\s+$/.test(originalWords[index]);
+  const highlightRedDiff = (oldStr, newStr) => {
+    const newWords = newStr.split(/\s/);
+    const oldWords = oldStr.split(/\s/);
+    const newWords2 = newStr.replace(/[^А-ЯЁа-яё0-9\s]/g, ' ').split(/\s+/);
+    const oldWords2 = oldStr.replace(/[^А-ЯЁа-яё0-9\s]/g, ' ').split(/\s+/);
 
-      if (isHtmlTag) {
-        highlightedWords.push(word); // Preserve HTML tags
-      } 
-      else if (!isSpace) 
-      {
-        if (word !== originalWords[index]) {
-          console.log(res, word, originalWords[index], isHtmlTag);
-          // If the word doesn't match, apply the specified color
-          // console.log(word, originalWords[index])
-          highlightedWords.push(
-            <span key={i} style={{ color }}>
-              {res}
-            </span>
-          );
-        } else {
-          highlightedWords.push(<span key={i}>{res}</span>);
+    const commonWords = new Set(oldWords2.filter(word => word && newWords2.includes(word)));
+    
+    // Create an array to store JSX elements
+    const highlightedWords = [];
+    // console.log(commonWords)
+    oldWords.forEach((word, index) => {
+        const tmp = word.replace(/W/, '');
+        if (/^[а-яёА-ЯЁ]+$/.test(tmp)) {
+          if(!commonWords.has(tmp))
+          {
+            highlightedWords.push(
+                <span key={index} style={{ color: 'red' }}>
+                    {word}
+                </span>
+            );
+          }
+          else
+          {
+            highlightedWords.push(
+              <span key={index}>
+                  {word}
+              </span>
+            );
+          }
         }
-      }
-  
-      // If it's not an HTML tag, increment the index
-      if (!isHtmlTag && !isSpace) {
-        index++;
-      }
-    }
-  
+        else
+        {
+          highlightedWords.push(
+            <span key={index}>
+                {word}
+            </span>
+        );
+        }
+    });
+
     return (
-      <span style={{ whiteSpace: 'pre-wrap' }}>
-        {highlightedWords.map((word, index) => (
-          <React.Fragment key={index}>{word} </React.Fragment>
-        ))}
-      </span>
+        <span style={{ whiteSpace: 'pre-wrap' }}>
+            {highlightedWords.map((word, index) => (
+                <React.Fragment key={index}>{word} </React.Fragment>
+            ))}
+        </span>
+    );
+  };
+
+  const highlightGreenDiff = (oldStr, newStr) => {
+    const newString = newStr.split(/\n/);
+    const highlightedWords = [];
+    newString.forEach((line, i) => {
+      const newWords = line.split(/\s+/); //.replace(/[^a-zA-ZА-ЯЁа-яё0-9\s]/g, ' ')
+      
+      const newWords2 = line.replace(/[^А-ЯЁа-яё0-9\s]/g, ' ').split(/\s+/);
+      const oldWords2 = oldStr.replace(/[^А-ЯЁа-яё0-9\s]/g, ' ').split(/\s+/);
+
+      const commonWords = new Set(oldWords2.filter(word => word && newWords2.includes(word)));
+      // Create an array to store JSX elements
+
+      newWords.forEach((word, index) => {
+          const tmp = word.replace(/W/, '');
+          console.log(word)
+          if (/^[а-яёА-ЯЁ]+$/.test(tmp)) {
+            if(!commonWords.has(tmp))
+            {
+              highlightedWords.push(
+                  <span key={index} style={{ color: 'green' }}>
+                      {word}
+                  </span>
+              );
+            }
+            else
+            {
+              highlightedWords.push(
+                <span key={index}>
+                    {word}
+                </span>
+              );
+            }
+          }
+          else
+          {
+            highlightedWords.push(
+              <span key={index}>
+                  {word}
+              </span>
+          );
+          }
+      });
+      highlightedWords.push(
+        <span key={33242424234242}>
+            {"\n"}
+        </span>)
+    })
+
+    return (
+        <span style={{ whiteSpace: 'pre-wrap' }}>
+            {highlightedWords.map((word, index) => (
+                <React.Fragment key={index}>{word} </React.Fragment>
+            ))}
+        </span>
     );
   };
   
@@ -83,9 +125,14 @@ function TextCard(props) {
     <div className="card" style={cardStyle}> {/* Обновляем стили контейнера */}
       <div className="card-body">
         <h2 style={{ color: "#02598A" }}>{props.title}</h2>
-        {props.sent && (
+        {props.sent && (props.color === 'red') && (
           <h5 className="card-text" style={textStyle}>
-            {highlightText(props.oldText, props.responseText, props.color)}
+            {highlightRedDiff(props.oldText, props.responseText)}
+          </h5>
+        )}
+        {props.sent && (props.color === 'green') && (
+          <h5 className="card-text" style={textStyle}>
+            {highlightGreenDiff(props.oldText, props.responseText)}
           </h5>
         )}
       </div>

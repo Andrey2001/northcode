@@ -7,6 +7,7 @@ import pandas as pd
 from .src.rus_dict import create_dict
 from .src.language_model import LanguageModel
 from .src.preprocess import *
+# from .src.test import *
 import os
 
 rus_dict = None
@@ -56,6 +57,6 @@ class ChatBot(APIView):
             
             pd.Series(ans).to_csv("results/ans.csv", index=False)
 
-            return JsonResponse({'success': True, 'response_message': ""})
+            return JsonResponse({'success': True, 'response_message': "Результаты записаны в файл"})
         
-        return JsonResponse({'success': True, 'response_message': "BADD"})
+        return JsonResponse({'success': True, 'response_message': "Результаты записаны в файл"})
